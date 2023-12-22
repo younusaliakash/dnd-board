@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import PlusIcon from "../icons/PlusIcon";
-import { Column, Id } from "../types";
+import { Column, Id, Task } from "../types";
 import ColumnContainer from "./ColumnContainer";
 import {
   DndContext,
@@ -18,6 +18,8 @@ const Board = () => {
   const [columns, setColumn] = useState<Column[]>([]);
   const [activeColumns, setaActiveColumns] = useState<Column | null>(null);
   const columnId = useMemo(() => columns.map((column) => column.id), [columns]);
+
+  const [tasks, setTask] = useState<Task[]>([]);
 
   const sensor = useSensors(
     useSensor(PointerSensor, {
@@ -89,6 +91,16 @@ const Board = () => {
     });
   }
 
+  function createTask(columnId: Id) {
+    const newTask: Task = {
+      id: generateId(),
+      columnId,
+      content: `Task ${tasks.length + 1}`,
+    };
+
+    setTask([...tasks, newTask]);
+  }
+
   return (
     <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[40px]">
       <DndContext
@@ -103,6 +115,8 @@ const Board = () => {
                 <ColumnContainer
                   deleteColumn={deleteColumn}
                   updateColumn={updateColumn}
+                  createTask={createTask}
+                  tasks={tasks.filter((task) => task.columnId === column.id)}
                   column={column}
                   key={idx}
                 />
@@ -125,6 +139,8 @@ const Board = () => {
                 column={activeColumns}
                 deleteColumn={deleteColumn}
                 updateColumn={updateColumn}
+                createTask={createTask}
+                // tasks={tasks.filter((task) => task.columnId === column.id)}
               />
             )}
           </DragOverlay>,
