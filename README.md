@@ -20,7 +20,7 @@ This project features a highly interactive drag-and-drop board, resembling a Kan
 - **Manage Task Cards:**
   - Remove a card by clicking on the delete icon on the right side of each card.
   - Change the position of cards within a column by dragging and dropping.
-  - **Drag and drop any task card inside a column.**
+  - Drag and drop any task card inside a column.
   - **Drag and drop a task card into another column.**
 
 ## Technologies Used
