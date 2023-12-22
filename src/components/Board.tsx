@@ -10,9 +10,11 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
+  DragOverEvent,
 } from "@dnd-kit/core";
 import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
+import TaskCard from "./Taskcard";
 
 const Board = () => {
   const [columns, setColumn] = useState<Column[]>([]);
@@ -20,6 +22,7 @@ const Board = () => {
   const columnId = useMemo(() => columns.map((column) => column.id), [columns]);
 
   const [tasks, setTask] = useState<Task[]>([]);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const sensor = useSensors(
     useSensor(PointerSensor, {
@@ -65,9 +68,16 @@ const Board = () => {
       setaActiveColumns(event.active.data.current.column);
       return;
     }
+
+    if (event.active.data.current?.type === "Task") {
+      setActiveTask(event.active.data.current.task);
+      return;
+    }
   }
 
   function onDragEndEvent(event: DragEndEvent) {
+    setaActiveColumns(null);
+    setActiveTask(null);
     const { active, over } = event;
 
     if (!over) return;
@@ -89,6 +99,31 @@ const Board = () => {
 
       return arrayMove(columns, activeColumnIndex, overColumnIndex);
     });
+  }
+
+  function onDragOverEvent(event: DragOverEvent) {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+
+    if (activeId === overId) return;
+
+    const isActiveTask = active.data.current?.type === "Task";
+    const isOverTask = over.data.current?.type === "Task";
+    //I'm dropping a task over another task
+    if (isActiveTask && isOverTask) {
+      setTask((tasks) => {
+        const activeTaskIndex = tasks.findIndex((task) => task.id === activeId);
+        const overTaskIndex = tasks.findIndex((task) => task.id === overId);
+
+        return arrayMove(tasks, activeTaskIndex, overTaskIndex);
+      });
+    }
+
+    //I'm dropping a task over another column
   }
 
   //create Task
@@ -126,6 +161,7 @@ const Board = () => {
         sensors={sensor}
         onDragStart={onDragStartEvent}
         onDragEnd={onDragEndEvent}
+        onDragOver={onDragOverEvent}
       >
         <div className="m-auto flex gap-4">
           <div className="flex gap-4">
@@ -166,6 +202,13 @@ const Board = () => {
                 )}
                 updateTask={updateTask}
                 deleteTask={deleteTask}
+              />
+            )}
+            {activeTask && (
+              <TaskCard
+                task={activeTask}
+                deleteTask={deleteTask}
+                updateTask={updateTask}
               />
             )}
           </DragOverlay>,

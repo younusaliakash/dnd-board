@@ -1,6 +1,8 @@
 import { useState } from "react";
 import TrashIcon from "../icons/TrashIcon";
 import { Id, Task } from "../types";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface TaskProps {
   task: Task;
@@ -17,9 +19,46 @@ const TaskCard = ({ task, deleteTask, updateTask }: TaskProps) => {
     setMouseOver(false);
   }
 
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: "Task",
+      task,
+    },
+    disabled: editMode,
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
+
+  if (isDragging) {
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="bg-mainBackgroundColor p-2.5 h-[100px] min-h-[100px] flex items-center text-left rounded-xl border-2 border-rose-500 cursor-grab relative opacity-30"
+      ></div>
+    );
+  }
+
   if (editMode) {
     return (
-      <div className="bg-mainBackgroundColor p-2.5 h-[100px] min-h-[100px] flex items-center text-left rounded-xl hover:ring-inset hover:ring-2 hover:ring-rose-500 cursor-grab relative">
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className="bg-mainBackgroundColor p-2.5 h-[100px] min-h-[100px] flex items-center text-left rounded-xl hover:ring-inset hover:ring-2 hover:ring-rose-500 cursor-grab relative"
+      >
         <textarea
           className="h-[90%] w-full resize-none border-none rounded bg-transparent text-white focus:outline-none"
           value={task.content}
@@ -39,6 +78,10 @@ const TaskCard = ({ task, deleteTask, updateTask }: TaskProps) => {
 
   return (
     <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       onMouseEnter={() => {
         setMouseOver(true);
       }}
