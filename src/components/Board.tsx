@@ -6,8 +6,7 @@ import ColumnContainer from "./ColumnContainer";
 const Board = () => {
   const [columns, setColumn] = useState<Column[]>([]);
 
-  console.log(columns);
-
+  //create a new Column function 
   function createNewColumn() {
     const columnToAdd: Column = {
       id: generateId(),
@@ -17,10 +16,12 @@ const Board = () => {
     setColumn([...columns, columnToAdd]);
   }
 
+  //generate a random ID function
   function generateId() {
     return Math.floor(Math.random() * 10001);
   }
 
+  // Delete a column function
   function deleteColumn(id: Id) {
     const filterColumn = columns.filter((column) => column.id !== id);
     setColumn(filterColumn);
