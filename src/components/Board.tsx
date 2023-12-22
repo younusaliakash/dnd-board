@@ -51,6 +51,10 @@ const Board = () => {
   function deleteColumn(id: Id) {
     const filterColumn = columns.filter((column) => column.id !== id);
     setColumn(filterColumn);
+
+    //remove relevant task when deleting current column
+    const newTask = tasks.filter((task) => task.columnId !== id);
+    setTask(newTask);
   }
 
   //update column
