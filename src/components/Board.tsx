@@ -48,6 +48,16 @@ const Board = () => {
     setColumn(filterColumn);
   }
 
+  //update column
+  function updateColumn(id: Id, title: string) {
+    const newColumn = columns.map((col) => {
+      if (col.id !== id) return col;
+      return { ...col, title };
+    });
+
+    setColumn(newColumn);
+  }
+
   function onDragStartEvent(event: DragStartEvent) {
     if (event.active.data.current?.type === "Column") {
       setaActiveColumns(event.active.data.current.column);
@@ -92,6 +102,7 @@ const Board = () => {
               {columns?.map((column, idx) => (
                 <ColumnContainer
                   deleteColumn={deleteColumn}
+                  updateColumn={updateColumn}
                   column={column}
                   key={idx}
                 />
@@ -113,6 +124,7 @@ const Board = () => {
               <ColumnContainer
                 column={activeColumns}
                 deleteColumn={deleteColumn}
+                updateColumn={updateColumn}
               />
             )}
           </DragOverlay>,
