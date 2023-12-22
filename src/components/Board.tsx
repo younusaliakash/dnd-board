@@ -109,6 +109,17 @@ const Board = () => {
     setTask(newTaks);
   }
 
+  //update tasks
+  function updateTask(id: Id, content: string) {
+    const newTask = tasks.map((task) => {
+      if (task.id !== id) return task;
+
+      return { ...task, content };
+    });
+
+    setTask(newTask);
+  }
+
   return (
     <div className="m-auto flex min-h-screen w-full items-center overflow-x-auto overflow-y-hidden px-[40px]">
       <DndContext
@@ -126,6 +137,7 @@ const Board = () => {
                   createTask={createTask}
                   tasks={tasks.filter((task) => task.columnId === column.id)}
                   deleteTask={deleteTask}
+                  updateTask={updateTask}
                   column={column}
                   key={idx}
                 />
@@ -152,6 +164,7 @@ const Board = () => {
                 tasks={tasks.filter(
                   (task) => task.columnId === activeColumns.id
                 )}
+                updateTask={updateTask}
                 deleteTask={deleteTask}
               />
             )}
