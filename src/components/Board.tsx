@@ -6,7 +6,7 @@ import ColumnContainer from "./ColumnContainer";
 const Board = () => {
   const [columns, setColumn] = useState<Column[]>([]);
 
-  //function that will create a new column by clicking
+  //function that create a new column
   function createNewColumn() {
     const columnToAdd: Column = {
       id: generateId(),
