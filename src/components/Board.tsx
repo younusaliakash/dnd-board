@@ -91,6 +91,7 @@ const Board = () => {
     });
   }
 
+  //create Task
   function createTask(columnId: Id) {
     const newTask: Task = {
       id: generateId(),
@@ -99,6 +100,13 @@ const Board = () => {
     };
 
     setTask([...tasks, newTask]);
+  }
+
+  //delete a task
+  function deleteTask(id: Id) {
+    const newTaks = tasks.filter((task) => task.id !== id);
+
+    setTask(newTaks);
   }
 
   return (
@@ -117,6 +125,7 @@ const Board = () => {
                   updateColumn={updateColumn}
                   createTask={createTask}
                   tasks={tasks.filter((task) => task.columnId === column.id)}
+                  deleteTask={deleteTask}
                   column={column}
                   key={idx}
                 />
@@ -140,7 +149,10 @@ const Board = () => {
                 deleteColumn={deleteColumn}
                 updateColumn={updateColumn}
                 createTask={createTask}
-                // tasks={tasks.filter((task) => task.columnId === column.id)}
+                tasks={tasks.filter(
+                  (task) => task.columnId === activeColumns.id
+                )}
+                deleteTask={deleteTask}
               />
             )}
           </DragOverlay>,
