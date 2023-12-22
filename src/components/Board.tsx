@@ -113,17 +113,37 @@ const Board = () => {
 
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
+
+    if (!isActiveTask) return;
+
     //I'm dropping a task over another task
     if (isActiveTask && isOverTask) {
       setTask((tasks) => {
         const activeTaskIndex = tasks.findIndex((task) => task.id === activeId);
         const overTaskIndex = tasks.findIndex((task) => task.id === overId);
 
+        // if(tasks[activeTaskIndex].columnId !== tasks[overTaskIndex].columnId){
+        //   tasks[activeTaskIndex].columnId = tasks[overTaskIndex].columnId
+        // }
+
+        tasks[activeTaskIndex].columnId = tasks[overTaskIndex].columnId;
+
         return arrayMove(tasks, activeTaskIndex, overTaskIndex);
       });
     }
 
     //I'm dropping a task over another column
+    const isOverColumn = over.data.current?.type === "Column";
+
+    if (isActiveTask && isOverColumn) {
+      setTask((tasks) => {
+        const activeTaskIndex = tasks.findIndex((task) => task.id === activeId);
+
+        tasks[activeTaskIndex].columnId = overId;
+
+        return arrayMove(tasks, activeTaskIndex, activeTaskIndex);
+      });
+    }
   }
 
   //create Task
